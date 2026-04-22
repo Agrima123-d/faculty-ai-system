@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Intake</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<div class="shell fade-in">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">FA</div>
+            <div class="brand-copy">
+                <h2>Student Intake Panel</h2>
+                <p>Create or update student records from a dashboard-style workspace</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <div class="status-pill">Profile editor</div>
+            <a class="btn-ghost" th:href="@{/students}">Back to dashboard</a>
+        </div>
+    </header>
+
+    <section class="hero fade-in-delay">
+        <div class="hero-grid">
+            <div>
+                <div class="eyebrow">Faculty workflow</div>
+                <h2 th:text="${student.id != null} ? 'Refine an existing profile.' : 'Create a polished student record.'">
+                    Create a polished student record.
+                </h2>
+                <p>
+                    Use this screen to maintain a complete academic profile with identification, class placement,
+                    contact details, and activity status in one clean workflow.
+                </p>
+            </div>
+            <div class="hero-panel">
+                <div class="mini-card">
+                    <span>Mode</span>
+                    <strong th:text="${student.id != null} ? 'Edit profile' : 'New enrollment'">New enrollment</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Form type</span>
+                    <strong>Single-screen intake</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Return path</span>
+                    <strong>Student dashboard</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="form-shell">
+        <article class="form-card fade-in-delay">
+            <div class="section-title">
+                <h3>Student details</h3>
+                <p>Fill out the profile sections below to save a fuller academic and support record.</p>
+            </div>
+
+            <form th:action="@{/students/save}" th:object="${student}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="section-title">
+                    <h3>Academic identity</h3>
+                    <p>Core information used to identify the student across the system.</p>
+                </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="rollNo">Roll number</label>
+                        <input id="rollNo" type="text" th:field="*{rollNo}" placeholder="e.g. CSE-24-018" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="name">Student name</label>
+                        <input id="name" type="text" th:field="*{name}" placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="department">Department</label>
+                        <input id="department" type="text" th:field="*{department}" placeholder="Computer Science">
+                    </div>
+
+                    <div class="field">
+                        <label for="registrationNumber">Registration number</label>
+                        <input id="registrationNumber" type="text" th:field="*{registrationNumber}" placeholder="University registration ID">
+                    </div>
+
+                    <div class="field">
+                        <label for="semester">Semester</label>
+                        <input id="semester" type="number" min="1" th:field="*{semester}" placeholder="1">
+                    </div>
+
+                    <div class="field">
+                        <label for="section">Section</label>
+                        <input id="section" type="text" th:field="*{section}" placeholder="A">
+                    </div>
+
+                    <div class="field">
+                        <label for="admissionYear">Admission year</label>
+                        <input id="admissionYear" type="number" min="2000" max="2100" th:field="*{admissionYear}" placeholder="2024">
+                    </div>
+
+                    <div class="field">
+                        <label for="cgpa">CGPA</label>
+                        <input id="cgpa" type="number" min="0" max="10" step="0.01" th:field="*{cgpa}" placeholder="8.45">
+                    </div>
+
+                    <div class="field">
+                        <label for="dateOfBirth">Date of birth</label>
+                        <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}">
+                    </div>
+
+                    <div class="field">
+                        <label for="gender">Gender</label>
+                        <input id="gender" type="text" th:field="*{gender}" placeholder="Female / Male / Other">
+                    </div>
+
+                    <div class="field">
+                        <label for="bloodGroup">Blood group</label>
+                        <input id="bloodGroup" type="text" th:field="*{bloodGroup}" placeholder="O+">
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top: 26px;">
+                    <h3>Primary contact</h3>
+                    <p>Student communication details for regular faculty use.</p>
+                </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="phone">Phone</label>
+                        <input id="phone" type="text" th:field="*{phone}" placeholder="+91 98765 43210">
+                    </div>
+
+                    <div class="field field-wide">
+                        <label for="email">Email address</label>
+                        <input id="email" type="email" th:field="*{email}" placeholder="student@college.edu">
+                    </div>
+
+                    <div class="field">
+                        <label for="city">City</label>
+                        <input id="city" type="text" th:field="*{city}" placeholder="New Delhi">
+                    </div>
+
+                    <div class="field">
+                        <label for="state">State</label>
+                        <input id="state" type="text" th:field="*{state}" placeholder="Delhi">
+                    </div>
+
+                    <div class="field field-wide">
+                        <label for="address">Address</label>
+                        <input id="address" type="text" th:field="*{address}" placeholder="Street, locality, district">
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top: 26px;">
+                    <h3>Guardian and emergency support</h3>
+                    <p>Important family and fallback contact details for faculty coordination.</p>
+                </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="guardianName">Guardian name</label>
+                        <input id="guardianName" type="text" th:field="*{guardianName}" placeholder="Parent or guardian name">
+                    </div>
+
+                    <div class="field">
+                        <label for="guardianPhone">Guardian phone</label>
+                        <input id="guardianPhone" type="text" th:field="*{guardianPhone}" placeholder="+91 98765 00000">
+                    </div>
+
+                    <div class="field">
+                        <label for="emergencyContactName">Emergency contact name</label>
+                        <input id="emergencyContactName" type="text" th:field="*{emergencyContactName}" placeholder="Emergency contact person">
+                    </div>
+
+                    <div class="field">
+                        <label for="emergencyContactPhone">Emergency contact phone</label>
+                        <input id="emergencyContactPhone" type="text" th:field="*{emergencyContactPhone}" placeholder="+91 98765 11111">
+                    </div>
+
+                    <div class="field field-wide">
+                        <label>Enrollment status</label>
+                        <div class="toggle">
+                            <input id="active" type="checkbox" th:field="*{active}">
+                            <label for="active">Keep this student active in the faculty dashboard</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn" type="submit">Save student</button>
+                    <a class="btn-ghost" th:href="@{/students}">Cancel</a>
+                </div>
+            </form>
+        </article>
+
+        <aside class="side-card fade-in-delay">
+            <div class="section-title">
+                <h3>What makes this better</h3>
+                <p>The student record now works more like a complete profile card than a basic CRUD entry.</p>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-item">
+                    <span class="checklist-bullet">1</span>
+                    <span>Academic, contact, and guardian details are captured in separate sections for easier entry.</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-bullet">2</span>
+                    <span>Extra profile depth makes the system more useful for advising, communication, and records review.</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-bullet">3</span>
+                    <span>New fields are stored directly in MySQL, so the dashboard can grow into attendance and marks workflows later.</span>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+</body>
+</html>

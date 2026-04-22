@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<div class="shell fade-in">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">FA</div>
+            <div class="brand-copy">
+                <h1>Faculty Pulse</h1>
+                <p>Student operations dashboard for daily academic tracking</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <div class="status-pill">Live roster view</div>
+            <a class="btn-ghost" th:href="@{/students/new}">Add student</a>
+        </div>
+    </header>
+
+    <section class="hero fade-in-delay">
+        <div class="hero-grid">
+            <div>
+                <div class="eyebrow">Academic command center</div>
+                <h2>Track students like a real dashboard.</h2>
+                <p>
+                    This view brings your roster, status overview, and quick actions into one place so you can manage
+                    day-to-day faculty work without bouncing between plain screens.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn" th:href="@{/students/new}">Create student profile</a>
+                    <a class="btn-ghost" href="#student-registry">Jump to registry</a>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="mini-card">
+                    <span>Total roster</span>
+                    <strong th:text="${#lists.size(students)}">0</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Dashboard mode</span>
+                    <strong>Faculty-ready UI</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Primary action</span>
+                    <strong>Review, edit, enroll</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel-grid">
+        <article class="card stats-card">
+            <div class="card-head">
+                <div>
+                    <h3>Roster analytics</h3>
+                    <p>Fast visibility into your current student dataset</p>
+                </div>
+                <div class="ghost-pill">Snapshot</div>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label">Total students</div>
+                    <div class="metric-value" th:text="${#lists.size(students)}">0</div>
+                    <div class="metric-note">All registered student records in the system</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Active records</div>
+                    <div class="metric-value" id="activeCount">0</div>
+                    <div class="metric-note">Students currently marked as active</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Departments</div>
+                    <div class="metric-value" id="departmentCount">0</div>
+                    <div class="metric-note">Distinct departments in the roster</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Average CGPA</div>
+                    <div class="metric-value" id="avgCgpa">0.00</div>
+                    <div class="metric-note">Average of student profiles with academic scores</div>
+                </div>
+            </div>
+        </article>
+
+        <aside class="card activity-card">
+            <div class="card-head">
+                <div>
+                    <h3>Quick guidance</h3>
+                    <p>Suggested flow for faculty operators</p>
+                </div>
+            </div>
+
+            <div class="insight-list">
+                <div class="insight-item">
+                    <div class="insight-dot"></div>
+                    <div>
+                        <strong>Review the roster first</strong>
+                        <span>Use the registry below to scan student identity, semester, section, and status in one pass.</span>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-dot"></div>
+                    <div>
+                        <strong>Keep profiles up to date</strong>
+                        <span>Edit student records before attendance, marks, or future AI workflows depend on them.</span>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-dot"></div>
+                    <div>
+                        <strong>Use the form as an intake panel</strong>
+                        <span>The add screen now works like a proper dashboard entry flow instead of a plain HTML form.</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="card table-card fade-in-delay" id="student-registry">
+        <div class="table-toolbar">
+            <div>
+                <div class="section-title">
+                    <h3>Student registry</h3>
+                    <p>Search-friendly, readable roster table for operations and quick edits</p>
+                </div>
+            </div>
+            <div class="meta" th:text="${#lists.size(students)} + ' records loaded'">0 records loaded</div>
+        </div>
+
+        <div class="table-wrap" th:if="${not #lists.isEmpty(students)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Academic</th>
+                    <th>Contact</th>
+                    <th>Support</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student : ${students}"
+                    th:attr="data-active=${student.active},data-department=${student.department},data-cgpa=${student.cgpa},data-admission-year=${student.admissionYear}">
+                    <td>
+                        <div class="student-cell">
+                            <span class="student-name" th:text="${student.name}">Student Name</span>
+                            <span class="student-roll" th:text="${student.rollNo}">Roll number</span>
+                            <span class="student-roll"
+                                  th:text="${student.registrationNumber != null and !#strings.isEmpty(student.registrationNumber) ? 'Reg: ' + student.registrationNumber : 'Registration pending'}">Registration pending</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="student-cell">
+                            <span class="tag" th:text="${student.department != null and !#strings.isEmpty(student.department) ? student.department : 'Department not set'}">Department</span>
+                            <span class="student-roll">
+                                <span th:text="'Semester ' + (${student.semester != null ? student.semester : '-'})">Semester</span>
+                                <span> | </span>
+                                <span th:text="'Section ' + (${student.section != null and !#strings.isEmpty(student.section) ? student.section : '-'})">Section</span>
+                            </span>
+                            <span class="student-roll">
+                                <span th:text="'Admission ' + (${student.admissionYear != null ? student.admissionYear : '-'})">Admission year</span>
+                                <span> | </span>
+                                <span th:text="'CGPA ' + (${student.cgpa != null ? #numbers.formatDecimal(student.cgpa, 1, 2) : '-'})">CGPA</span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="student-cell">
+                            <span th:text="${student.email != null and !#strings.isEmpty(student.email) ? student.email : 'No email'}">No email</span>
+                            <span class="student-roll" th:text="${student.phone != null and !#strings.isEmpty(student.phone) ? student.phone : 'No phone'}">No phone</span>
+                            <span class="student-roll">
+                                <span th:text="${student.city != null and !#strings.isEmpty(student.city) ? student.city : 'City not set'}">City</span>
+                                <span th:if="${student.state != null and !#strings.isEmpty(student.state)}"
+                                      th:text="${', ' + student.state}">, State</span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="student-cell">
+                            <span th:text="${student.guardianName != null and !#strings.isEmpty(student.guardianName) ? student.guardianName : 'Guardian not added'}">Guardian</span>
+                            <span class="student-roll"
+                                  th:text="${student.guardianPhone != null and !#strings.isEmpty(student.guardianPhone) ? student.guardianPhone : 'Guardian phone missing'}">Guardian phone</span>
+                            <span class="student-roll"
+                                  th:text="${student.emergencyContactName != null and !#strings.isEmpty(student.emergencyContactName) ? 'Emergency: ' + student.emergencyContactName : 'No emergency contact'}">Emergency contact</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${student.active} ? ' badge-active' : ' badge-inactive'"
+                              th:text="${student.active} ? 'Active' : 'Inactive'">Active</span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a class="table-link" th:href="@{/students/edit/{id}(id=${student.id})}">Edit</a>
+                            <a class="table-link danger" th:href="@{/students/delete/{id}(id=${student.id})}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(students)}">
+            <strong>No students yet</strong>
+            <p>Your dashboard is ready. Add the first student record to start building the registry.</p>
+            <div class="hero-actions" style="justify-content:center; margin-top: 18px;">
+                <a class="btn" th:href="@{/students/new}">Add first student</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script th:inline="javascript">
+    const rows = Array.from(document.querySelectorAll("tbody tr[data-active]"));
+    const activeCount = rows.filter((row) => row.dataset.active === "true").length;
+    const departments = new Set(
+        rows
+            .map((row) => (row.dataset.department || "").trim())
+            .filter((value) => value.length > 0)
+    );
+    const cgpas = rows
+        .map((row) => Number(row.dataset.cgpa))
+        .filter((value) => !Number.isNaN(value));
+    const avgCgpa = cgpas.length
+        ? (cgpas.reduce((sum, value) => sum + value, 0) / cgpas.length).toFixed(2)
+        : "0.00";
+
+    const activeEl = document.getElementById("activeCount");
+    const deptEl = document.getElementById("departmentCount");
+    const cgpaEl = document.getElementById("avgCgpa");
+
+    if (activeEl) {
+        activeEl.textContent = activeCount;
+    }
+
+    if (deptEl) {
+        deptEl.textContent = departments.size;
+    }
+
+    if (cgpaEl) {
+        cgpaEl.textContent = avgCgpa;
+    }
+</script>
+</body>
+</html>
